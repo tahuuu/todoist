@@ -38,17 +38,17 @@ const TodoItem: React.FC<TodoItemProps> = ({ task, toggleTask, deleteTask, editT
     <li className={`list-group-item ${task.completed ? 'list-group-item-light' : ''}`}>
       <div className="d-flex justify-content-between align-items-center">
         <div className="d-flex align-items-center">
-          {task.subtasks && task.subtasks.length > 0 && (
-            <button className="btn btn-sm btn-link me-2" onClick={() => setIsExpanded(!isExpanded)}>
-              {isExpanded ? '∧' : '>'}
-            </button>
-          )}
           <input
             type="checkbox"
             className="form-check-input me-2"
             checked={task.completed}
             onChange={() => toggleTask(task.id)}
           />
+          {task.subtasks && task.subtasks.length > 0 && (
+            <button className="btn btn-sm btn-link me-2" onClick={() => setIsExpanded(!isExpanded)}>
+              {isExpanded ? '∧' : '>'}
+            </button>
+          )}
           {isEditing ? (
             <input
               type="text"
