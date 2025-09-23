@@ -11,9 +11,9 @@ function App() {
       return JSON.parse(savedTasks);
     } else {
       return [
-        { id: 1, text: 'Learn React', completed: true, dueDate: '2025-09-24' },
-        { id: 2, text: 'Build a Todoist Clone', completed: false, dueDate: '2025-09-25' },
-        { id: 3, text: 'Deploy the app', completed: false },
+        { id: 1, text: 'Learn React', completed: true, dueDate: '2025-09-24', priority: 'High', subtasks: [] },
+        { id: 2, text: 'Build a Todoist Clone', completed: false, dueDate: '2025-09-25', priority: 'Medium', subtasks: [] },
+        { id: 3, text: 'Deploy the app', completed: false, priority: 'Low', subtasks: [] },
       ];
     }
   });
@@ -34,26 +34,84 @@ function App() {
     setTheme(theme === 'light' ? 'dark' : 'light');
   };
 
-  const addTask = (text: string, dueDate?: string) => {
+  const addTask = (text: string, dueDate?: string, priority?: string) => {
     const newTask: Task = {
       id: Date.now(),
       text,
       completed: false,
       dueDate,
+      priority,
+      subtasks: [],
     };
     setTasks([...tasks, newTask]);
   };
 
+  const findTask = (tasks: Task[], id: number): Task | null => {
+    for (const task of tasks) {
+      if (task.id === id) return task;
+      if (task.subtasks) {
+        const found = findTask(task.subtasks, id);
+        if (found) return found;
+      }
+    }
+    return null;
+  };
+
+  const updateTask = (tasks: Task[], updatedTask: Task): Task[] => {
+    return tasks.map(task => {
+      if (task.id === updatedTask.id) {
+        return updatedTask;
+      }
+      if (task.subtasks) {
+        return { ...task, subtasks: updateTask(task.subtasks, updatedTask) };
+      }
+      return task;
+    });
+  };
+
+  const deleteTaskRecursive = (tasks: Task[], id: number): Task[] => {
+    return tasks.filter(task => {
+      if (task.id === id) return false;
+      if (task.subtasks) {
+        task.subtasks = deleteTaskRecursive(task.subtasks, id);
+      }
+      return true;
+    });
+  };
+
   const toggleTask = (id: number) => {
-    setTasks(
-      tasks.map(task =>
-        task.id === id ? { ...task, completed: !task.completed } : task
-      )
-    );
+    const task = findTask(tasks, id);
+    if (task) {
+      const updatedTask = { ...task, completed: !task.completed };
+      setTasks(updateTask(tasks, updatedTask));
+    }
   };
 
   const deleteTask = (id: number) => {
-    setTasks(tasks.filter(task => task.id !== id));
+    setTasks(deleteTaskRecursive(tasks, id));
+  };
+
+  const editTask = (id: number, text: string) => {
+    const task = findTask(tasks, id);
+    if (task) {
+      const updatedTask = { ...task, text };
+      setTasks(updateTask(tasks, updatedTask));
+    }
+  };
+
+  const addSubTask = (parentId: number, text: string, dueDate?: string) => {
+    const parentTask = findTask(tasks, parentId);
+    if (parentTask) {
+      const newSubTask: Task = {
+        id: Date.now(),
+        text,
+        completed: false,
+        dueDate,
+        subtasks: [],
+      };
+      const updatedTask = { ...parentTask, subtasks: [...(parentTask.subtasks || []), newSubTask] };
+      setTasks(updateTask(tasks, updatedTask));
+    }
   };
 
   return (
@@ -68,10 +126,11 @@ function App() {
       </header>
       <main>
         <AddTodoForm addTask={addTask} />
-        <TodoList tasks={tasks} toggleTask={toggleTask} deleteTask={deleteTask} />
+        <TodoList tasks={tasks} toggleTask={toggleTask} deleteTask={deleteTask} editTask={editTask} addSubTask={addSubTask} />
       </main>
     </div>
   );
 }
 
 export default App;
+

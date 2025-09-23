@@ -3,4 +3,6 @@ export interface Task {
   text: string;
   completed: boolean;
   dueDate?: string;
+  priority?: string;
+  subtasks?: Task[];
 }
