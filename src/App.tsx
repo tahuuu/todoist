@@ -3,6 +3,8 @@ import './App.css';
 import { Task } from './interfaces';
 import AddTodoForm from './components/AddTodoForm';
 import TodoList from './components/TodoList';
+import { DragDropContext, DropResult } from '@hello-pangea/dnd';
+import CalendarView from './components/CalendarView';
 
 function App() {
   const [tasks, setTasks] = useState<Task[]>(() => {
@@ -114,23 +116,52 @@ function App() {
     }
   };
 
+  const onDragEnd = (result: DropResult) => {
+    const { source, destination } = result;
+    if (!destination) return;
+
+    const reorder = (list: Task[], startIndex: number, endIndex: number) => {
+      const result = Array.from(list);
+      const [removed] = result.splice(startIndex, 1);
+      result.splice(endIndex, 0, removed);
+      return result;
+    };
+
+    if (source.droppableId === destination.droppableId) {
+      if (source.droppableId === 'tasks') {
+        const newTasks = reorder(tasks, source.index, destination.index);
+        setTasks(newTasks);
+      }
+    }
+  };
+
   return (
-    <div className={`app-container ${theme}`}>
-      <header className="app-header">
-        <h1>Todoist</h1>
-        <div className='theme-toggler'>
-          <button onClick={toggleTheme} className="btn btn-sm btn-outline-light">
-            {theme === 'light' ? 'Dark' : 'Light'} Mode
-          </button>
+    <DragDropContext onDragEnd={onDragEnd}>
+      <div className={`app-container ${theme}`}>
+        <header className="app-header">
+          <h1>Todoist</h1>
+          <div className='theme-toggler'>
+            <button onClick={toggleTheme} className="btn btn-sm btn-outline-light">
+              {theme === 'light' ? 'Dark' : 'Light'} Mode
+            </button>
+          </div>
+        </header>
+        <div className="app-main-container">
+          <div className="calendar-container">
+            <CalendarView tasks={tasks} />
+          </div>
+          <div className="todolist-container">
+            <main>
+              <AddTodoForm addTask={addTask} />
+              <TodoList tasks={tasks} toggleTask={toggleTask} deleteTask={deleteTask} editTask={editTask} addSubTask={addSubTask} />
+            </main>
+          </div>
         </div>
-      </header>
-      <main>
-        <AddTodoForm addTask={addTask} />
-        <TodoList tasks={tasks} toggleTask={toggleTask} deleteTask={deleteTask} editTask={editTask} addSubTask={addSubTask} />
-      </main>
-    </div>
+      </div>
+    </DragDropContext>
   );
 }
 
 export default App;
+
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Task } from '../interfaces';
 import TodoItem from './TodoItem';
+import { Droppable } from '@hello-pangea/dnd';
 
 interface TodoListProps {
   tasks: Task[];
@@ -12,18 +13,24 @@ interface TodoListProps {
 
 const TodoList: React.FC<TodoListProps> = ({ tasks, toggleTask, deleteTask, editTask, addSubTask }) => {
   return (
-    <ul className="list-group">
-      {tasks.map(task => (
-        <TodoItem
-          key={task.id}
-          task={task}
-          toggleTask={toggleTask}
-          deleteTask={deleteTask}
-          editTask={editTask}
-          addSubTask={addSubTask}
-        />
-      ))}
-    </ul>
+    <Droppable droppableId="tasks">
+      {(provided) => (
+        <ul className="list-group" {...provided.droppableProps} ref={provided.innerRef}>
+          {tasks.map((task, index) => (
+            <TodoItem
+              key={task.id}
+              task={task}
+              index={index}
+              toggleTask={toggleTask}
+              deleteTask={deleteTask}
+              editTask={editTask}
+              addSubTask={addSubTask}
+            />
+          ))}
+          {provided.placeholder}
+        </ul>
+      )}
+    </Droppable>
   );
 };
 
