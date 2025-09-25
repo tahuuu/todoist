@@ -93,10 +93,10 @@ function App() {
     setTasks(deleteTaskRecursive(tasks, id));
   };
 
-  const editTask = (id: number, text: string) => {
+  const editTask = (id: number, updates: { text: string; dueDate: string; priority: string }) => {
     const task = findTask(tasks, id);
     if (task) {
-      const updatedTask = { ...task, text };
+      const updatedTask = { ...task, ...updates };
       setTasks(updateTask(tasks, updatedTask));
     }
   };
@@ -153,7 +153,7 @@ function App() {
           <div className="todolist-container">
             <main>
               <AddTodoForm addTask={addTask} />
-              <TodoList tasks={tasks} toggleTask={toggleTask} deleteTask={deleteTask} editTask={editTask} addSubTask={addSubTask} />
+              <TodoList tasks={tasks} toggleTask={toggleTask} deleteTask={deleteTask} editTask={editTask} addSubTask={addSubTask} droppableId="tasks" />
             </main>
           </div>
         </div>

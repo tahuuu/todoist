@@ -8,6 +8,7 @@ const AddTodoForm: React.FC<AddTodoFormProps> = ({ addTask }) => {
   const [text, setText] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [priority, setPriority] = useState('Medium');
+  const [isFormVisible, setIsFormVisible] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -15,8 +16,17 @@ const AddTodoForm: React.FC<AddTodoFormProps> = ({ addTask }) => {
       addTask(text, dueDate, priority);
       setText('');
       setDueDate('');
+      setIsFormVisible(false);
     }
   };
+
+  if (!isFormVisible) {
+    return (
+      <button className="btn btn-primary mb-4" onClick={() => setIsFormVisible(true)}>
+        Add Task
+      </button>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit} className="mb-4">
@@ -45,6 +55,9 @@ const AddTodoForm: React.FC<AddTodoFormProps> = ({ addTask }) => {
         </select>
         <button type="submit" className="btn btn-primary">
           Add Task
+        </button>
+        <button type="button" className="btn btn-secondary" onClick={() => setIsFormVisible(false)}>
+          Cancel
         </button>
       </div>
     </form>

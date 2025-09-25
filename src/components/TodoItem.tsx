@@ -2,30 +2,24 @@ import React, { useState } from 'react';
 import { Task } from '../interfaces';
 import TodoList from './TodoList';
 import { Draggable } from '@hello-pangea/dnd';
+import { Dropdown } from 'react-bootstrap';
+import EditTaskModal from './EditTaskModal';
 
 interface TodoItemProps {
   task: Task;
   toggleTask: (id: number) => void;
   deleteTask: (id: number) => void;
-  editTask: (id: number, text: string) => void;
+  editTask: (id: number, updates: { text: string; dueDate: string; priority: string }) => void;
   addSubTask: (parentId: number, text: string, dueDate?: string) => void;
   index: number;
 }
 
 const TodoItem: React.FC<TodoItemProps> = ({ task, toggleTask, deleteTask, editTask, addSubTask, index }) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [newText, setNewText] = useState(task.text);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [showSubtaskInput, setShowSubtaskInput] = useState(false);
   const [subtaskText, setSubtaskText] = useState('');
   const [subtaskDueDate, setSubtaskDueDate] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
-
-  const handleEdit = () => {
-    if (isEditing) {
-      editTask(task.id, newText);
-    }
-    setIsEditing(!isEditing);
-  };
 
   const handleAddSubtask = () => {
     if (subtaskText.trim()) {
@@ -46,45 +40,40 @@ const TodoItem: React.FC<TodoItemProps> = ({ task, toggleTask, deleteTask, editT
           ref={provided.innerRef}
         >
           <div className="d-flex justify-content-between align-items-center">
-            <div className="d-flex align-items-center">
+            <div className="d-flex align-items-center flex-grow-1">
               <input
                 type="checkbox"
                 className="form-check-input me-2"
                 checked={task.completed}
                 onChange={() => toggleTask(task.id)}
               />
+              <span style={{ textDecoration: task.completed ? 'line-through' : 'none' }}>
+                {task.text}
+              </span>
               {task.subtasks && task.subtasks.length > 0 && (
-                <button className="btn btn-sm btn-link me-2" onClick={() => setIsExpanded(!isExpanded)}>
+                <button className="btn btn-sm expand-collapse-btn ms-2" onClick={() => setIsExpanded(!isExpanded)}>
                   {isExpanded ? '∧' : '>'}
                 </button>
               )}
-              {isEditing ? (
-                <input
-                  type="text"
-                  className="form-control"
-                  value={newText}
-                  onChange={(e) => setNewText(e.target.value)}
-                />
-              ) : (
-                <>
-                  <span style={{ textDecoration: task.completed ? 'line-through' : 'none' }}>
-                    {task.text}
-                  </span>
-                  {task.dueDate && <span className="ms-2 text-muted">({task.dueDate})</span>}
-                  {task.priority && <span className={`ms-2 badge ${getPriorityClass(task.priority)}`}>{task.priority}</span>}
-                </>
-              )}
+              {task.dueDate && <span className="ms-2 text-muted">({task.dueDate})</span>}
+              {task.priority && <span className={`ms-2 badge ${getPriorityClass(task.priority)}`}>{task.priority}</span>}
             </div>
             <div>
-              <button className="btn btn-primary btn-sm me-2" onClick={() => setShowSubtaskInput(!showSubtaskInput)}>
-                Add Subtask
-              </button>
-              <button className="btn btn-info btn-sm me-2" onClick={handleEdit}>
-                {isEditing ? 'Save' : 'Edit'}
-              </button>
-              <button className="btn btn-danger btn-sm" onClick={() => deleteTask(task.id)}>
-                Delete
-              </button>
+                              <Dropdown>
+                                <Dropdown.Toggle as="button" className="btn btn-sm more-options-btn">
+                                  ...
+                                </Dropdown.Toggle>                <Dropdown.Menu>
+                  <Dropdown.Item onClick={() => setShowSubtaskInput(!showSubtaskInput)}>
+                    Add Subtask
+                  </Dropdown.Item>
+                  <Dropdown.Item onClick={() => setShowEditModal(true)}>
+                    Edit
+                  </Dropdown.Item>
+                  <Dropdown.Item className="text-danger" onClick={() => deleteTask(task.id)}>
+                    Delete
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
             </div>
           </div>
           {showSubtaskInput && (
@@ -115,9 +104,16 @@ const TodoItem: React.FC<TodoItemProps> = ({ task, toggleTask, deleteTask, editT
                 deleteTask={deleteTask}
                 editTask={editTask}
                 addSubTask={addSubTask}
+                droppableId={task.id.toString()}
               />
             </div>
           )}
+          <EditTaskModal
+            show={showEditModal}
+            handleClose={() => setShowEditModal(false)}
+            task={task}
+            editTask={editTask}
+          />
         </li>
       )}
     </Draggable>
