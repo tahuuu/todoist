@@ -149,3 +149,8 @@ body {
 .dark .has-task {
   background-color: #666;
 }
+
+.dark .react-calendar__tile--now {
+  background-color: gold;
+  border-radius: 50%;
+}
