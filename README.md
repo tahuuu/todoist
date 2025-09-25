@@ -1,22 +1,41 @@
 # Todoist Clone
 
-This is a simple Todoist clone built with React.
+A modern, feature-rich Todoist clone built with React and TypeScript.
+
+<!-- You can add a screenshot of the application here -->
+<!-- ![App Screenshot](link-to-your-screenshot.png) -->
 
 ## Features
 
-* Add new tasks
-* Mark tasks as complete
-* Delete tasks
-* Tasks are saved in local storage
-* Light and dark theme
+This application provides a comprehensive set of features for managing your tasks:
+
+- **Full Task Management:** Create, edit (in a clean modal), and delete tasks with ease.
+- **Rich Task Details:** Enhance your tasks with due dates and priority levels (High, Medium, Low).
+- **Nested Subtasks:** Break down complex tasks into smaller, manageable subtasks, each with its own due date.
+- **Interactive UI:**
+  - **Drag & Drop:** Easily reorder your main tasks with a smooth drag-and-drop interface.
+  - **Expand & Collapse:** Keep your view clean by collapsing subtask lists.
+  - **"More Options" Menu:** A modern "..." menu on each task reduces clutter.
+  - **Collapsible Forms:** The "Add Task" form is neatly tucked away until you need it.
+- **Calendar View:** A compact calendar on the side provides a visual overview of your tasks and their due dates.
+- **Theming:** Switch between a light and a dark theme to suit your preference.
+- **Persistent Storage:** Your tasks are automatically saved to your browser's local storage, so they're there when you come back.
+
+## Tech Stack
+
+- **React:** For building the user interface.
+- **TypeScript:** For type safety and an improved developer experience.
+- **Bootstrap & `react-bootstrap`:** For styling and robust UI components like modals and dropdowns.
+- **`@hello-pangea/dnd`:** For the smooth drag-and-drop functionality.
+- **`react-calendar`:** For the interactive calendar view.
 
 ## Getting Started
 
-To get a local copy up and running follow these simple steps.
+To get a local copy up and running, follow these simple steps.
 
 ### Prerequisites
 
-* npm
+Make sure you have `npm` installed.
 ```sh
 npm install npm@latest -g
 ```
@@ -24,13 +43,13 @@ npm install npm@latest -g
 ### Installation
 
 1. Clone the repo
-```sh
-git clone https://github.com/your_username_/Project-Name.git
-```
+   ```sh
+   git clone https://github.com/your_username_/Project-Name.git
+   ```
 2. Install NPM packages
-```sh
-npm install
-```
+   ```sh
+   npm install
+   ```
 
 ## Available Scripts
 
@@ -38,36 +57,15 @@ In the project directory, you can run:
 
 ### `npm start`
 
-Runs the app in the development mode.
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Runs the app in development mode.
+Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload if you make edits.
-You will also see any lint errors in the console.
+The page will reload if you make edits, and you will see any lint errors in the console.
 
 ### `npm test`
 
-Launches the test runner in the interactive watch mode.
+Launches the test runner in interactive watch mode.
 
 ### `npm run build`
 
-Builds the app for production to the `build` folder.
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.
-Your app is ready to be deployed!
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Dependencies
-
-* React
-* Bootstrap
-* TypeScript
+Builds the app for production to the `build` folder. It correctly bundles React in production mode and optimizes the build for the best performance.
